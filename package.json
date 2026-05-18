@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "description": "Fragments back-end API",
   "scripts": {
-    "start": "node src/server.js",
+    "start": "node src/index.js",
     "dev": "cross-env LOG_LEVEL=debug nodemon --watch src src/server.js",
     "debug": "cross-env DEBUG=true npm run dev",
     "lint": "eslint \"./src/**/*.js\"",
@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "helmet": "^8.1.0",
     "pino": "^10.3.1",
