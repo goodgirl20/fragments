@@ -11,5 +11,8 @@
     "url": "git+https://github.com/goodgirl20/fragments.git"
   },
   "author": "Grace Elezabeth Thomas",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "prettier": "3.8.3"
+  }
 }
