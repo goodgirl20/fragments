@@ -1,8 +1,8 @@
 const express = require('express');
-
 const router = express.Router();
 
-// GET /v1/fragments
-router.get('/fragments', require('./get'));
+const authorize = require('../../auth/cognito');
+
+router.use('/fragments', authorize, require('./fragments'));
 
 module.exports = router;
