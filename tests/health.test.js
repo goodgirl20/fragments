@@ -5,6 +5,6 @@ describe('GET /', () => {
   test('should return success', async () => {
     const res = await request(app).get('/');
 
-    expect(res.statusCode).toBe(500);
+    expect(res.statusCode).toBe(200);
   });
 });
