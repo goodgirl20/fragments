@@ -1,31 +1,23 @@
-# Dockerfile for the Fragments microservice
+FROM node:22.17.1-alpine
 
-# Use Node.js version 22.17.1
-FROM node:22.17.1
-
-# Image metadata
 LABEL maintainer="Grace Elezabeth Thomas <grace.sally.thomas9656@gmail.com>"
 LABEL description="Fragments node.js microservice"
 
-# Environment variables
 ENV PORT=8080
 ENV NPM_CONFIG_LOGLEVEL=warn
 ENV NPM_CONFIG_COLOR=false
+ENV NODE_ENV=production
 
-# Use /app as working directory
 WORKDIR /app
 
-# Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+RUN npm ci --omit=dev
 
-# Copy source code
 COPY ./src ./src
 
-# Start the server
-CMD npm start
-
-# Document exposed port
 EXPOSE 8080
+
+USER node
+
+CMD ["npm", "start"]
