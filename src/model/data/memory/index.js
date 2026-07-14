@@ -18,11 +18,24 @@ module.exports.writeFragmentData = async (ownerId, id, data) => {
   return memory.put(`${ownerId}:${id}:data`, data);
 };
 
-module.exports.listFragments = async (ownerId) => {
+/**
+ * Returns fragment IDs by default.
+ * If expand=true, returns complete fragment metadata.
+ */
+module.exports.listFragments = async (ownerId, expand = false) => {
   const keys = await memory.list();
 
-  return keys
+  const fragmentKeys = keys
     .filter((key) => key.startsWith(`${ownerId}:`))
-    .filter((key) => !key.endsWith(':data'))
-    .map((key) => key.split(':')[1]);
+    .filter((key) => !key.endsWith(':data'));
+
+  if (!expand) {
+    return fragmentKeys.map((key) => key.split(':')[1]);
+  }
+
+  return Promise.all(
+    fragmentKeys.map(async (key) => {
+      return memory.get(key);
+    })
+  );
 };

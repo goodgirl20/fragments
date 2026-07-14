@@ -12,7 +12,7 @@ module.exports = {
   testTimeout: 5000,
   coverageThreshold: {
     global: {
-      lines: 70,
+      lines: 80,
     },
   },
 };

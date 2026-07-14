@@ -4,8 +4,11 @@ coverage/
 node_modules/
 tests/
 .env
+env.jest
 eslint.config.mjs
 .git/
 .gitignore
 .prettier*
 jest*
+Dockerfile
+README.md

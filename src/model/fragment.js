@@ -2,12 +2,7 @@
 
 const crypto = require('crypto');
 
-const {
-  readFragment,
-  writeFragment,
-  readFragmentData,
-  writeFragmentData,
-} = require('./data');
+const { readFragment, writeFragment, readFragmentData, writeFragmentData } = require('./data');
 
 class Fragment {
   constructor({ id, ownerId, created, updated, type, size = 0 }) {
@@ -19,6 +14,10 @@ class Fragment {
       throw new Error('type is required');
     }
 
+    if (!Fragment.isSupportedType(type)) {
+      throw new Error(`Unsupported content type: ${type}`);
+    }
+
     this.id = id || crypto.randomUUID();
     this.ownerId = ownerId;
     this.created = created || new Date().toISOString();
@@ -27,8 +26,17 @@ class Fragment {
     this.size = size;
   }
 
+  /**
+   * Assignment 2 supports all text types and application/json.
+   */
   static isSupportedType(type) {
-    return ['text/plain'].includes(type);
+    if (!type || typeof type !== 'string') {
+      return false;
+    }
+
+    const mediaType = type.split(';')[0].trim().toLowerCase();
+
+    return mediaType.startsWith('text/') || mediaType === 'application/json';
   }
 
   async save() {
@@ -51,8 +59,19 @@ class Fragment {
   }
 
   async setData(data) {
-    this.size = Buffer.byteLength(data);
-    await writeFragmentData(this.ownerId, this.id, data);
+    let buffer;
+
+    if (Buffer.isBuffer(data)) {
+      buffer = data;
+    } else if (typeof data === 'string') {
+      buffer = Buffer.from(data);
+    } else {
+      buffer = Buffer.from(JSON.stringify(data));
+    }
+
+    this.size = buffer.length;
+
+    await writeFragmentData(this.ownerId, this.id, buffer);
     await this.save();
   }
 }
