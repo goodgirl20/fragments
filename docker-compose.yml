@@ -1,0 +1,24 @@
+services:
+  fragments:
+    init: true
+    build: .
+    environment:
+      - API_URL=http://localhost:8080
+      - HTPASSWD_FILE=tests/.htpasswd
+      - FRAGMENTS_LOG_LEVEL=${FRAGMENTS_LOG_LEVEL:-info}
+    ports:
+      - "8080:8080"
+
+  dynamodb-local:
+    image: amazon/dynamodb-local
+    ports:
+      - "8000:8000"
+    command: ["-jar", "DynamoDBLocal.jar", "-inMemory"]
+
+  ministack:
+    image: ministackorg/ministack
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3
+      - MINISTACK_REGION=us-east-1
