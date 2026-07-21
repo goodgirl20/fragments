@@ -11,7 +11,11 @@ const app = express();
 
 app.use(pino);
 app.use(helmet());
-app.use(cors());
+app.use(
+  cors({
+    exposedHeaders: ['Location'],
+  })
+);
 
 app.use('/', require('./routes'));
 
