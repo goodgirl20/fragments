@@ -43,7 +43,7 @@ router.post(
       }
 
       if (!req.body || req.body.length === 0) {
-        return res.status(415).json({
+        return res.status(400).json({
           status: 'error',
           error: {
             message: 'Fragment data is required',
