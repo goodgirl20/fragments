@@ -2,7 +2,13 @@
 
 const crypto = require('crypto');
 
-const { readFragment, writeFragment, readFragmentData, writeFragmentData } = require('./data');
+const {
+  readFragment,
+  writeFragment,
+  readFragmentData,
+  writeFragmentData,
+  deleteFragment,
+} = require('./data');
 
 class Fragment {
   constructor({ id, ownerId, created, updated, type, size = 0 }) {
@@ -74,6 +80,10 @@ class Fragment {
     await writeFragmentData(this.ownerId, this.id, buffer);
     await this.save();
   }
+  async delete() {
+    await deleteFragment(this.ownerId, this.id);
+  }
+
 }
 
 module.exports = Fragment;

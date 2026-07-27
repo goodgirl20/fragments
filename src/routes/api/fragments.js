@@ -179,4 +179,28 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+/**
+ * Delete a fragment
+ * DELETE /v1/fragments/:id
+ */
+router.delete('/:id', async (req, res) => {
+  try {
+    const fragment = await Fragment.byId(req.user.sub, req.params.id);
+
+    await fragment.delete();
+
+    return res.status(200).json({
+      status: 'ok',
+    });
+  } catch (err) {
+    return res.status(404).json({
+      status: 'error',
+      error: {
+        message: err.message,
+        code: 404,
+      },
+    });
+  }
+});
+
 module.exports = router;

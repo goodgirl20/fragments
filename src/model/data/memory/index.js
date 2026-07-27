@@ -22,6 +22,12 @@ module.exports.writeFragmentData = async (ownerId, id, data) => {
  * Returns fragment IDs by default.
  * If expand=true, returns complete fragment metadata.
  */
+
+module.exports.deleteFragment = async (ownerId, id) => {
+  await memory.del(`${ownerId}:${id}`);
+  await memory.del(`${ownerId}:${id}:data`);
+};
+
 module.exports.listFragments = async (ownerId, expand = false) => {
   const keys = await memory.list();
 
