@@ -61,7 +61,7 @@ module.exports.writeFragmentData = async (ownerId, id, data) => {
       'Error uploading fragment data to S3'
     );
 
-    throw new Error('unable to upload fragment data');
+    throw new Error('unable to upload fragment data', { cause: err });
   }
 };
 
@@ -88,7 +88,7 @@ module.exports.readFragmentData = async (ownerId, id) => {
       'Error reading fragment data from S3'
     );
 
-    throw new Error('unable to read fragment data');
+    throw new Error('unable to read fragment data', { cause: err });
   }
 };
 
@@ -114,7 +114,7 @@ module.exports.deleteFragment = async (ownerId, id) => {
       'Error deleting fragment data from S3'
     );
 
-    throw new Error('unable to delete fragment');
+    throw new Error('unable to delete fragment', { cause: err });
   }
 };
 
