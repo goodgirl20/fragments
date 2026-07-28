@@ -38,6 +38,7 @@ WORKDIR /app
 COPY --from=dependencies /app/node_modules ./node_modules
 COPY package*.json ./
 COPY ./src ./src
+COPY ./tests/.htpasswd ./tests/.htpasswd
 
 # Run as the unprivileged `node` user instead of root
 USER node
