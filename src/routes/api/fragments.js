@@ -180,6 +180,82 @@ router.get('/:id', async (req, res) => {
 });
 
 /**
+ * Update an existing fragment
+ * PUT /v1/fragments/:id
+ */
+router.put(
+  '/:id',
+  express.raw({
+    type: () => true,
+    limit: '5mb',
+  }),
+  async (req, res) => {
+    try {
+      const fragment = await Fragment.byId(req.user.sub, req.params.id);
+
+      const contentTypeHeader = req.get('Content-Type');
+
+      if (!contentTypeHeader) {
+        return res.status(415).json({
+          status: 'error',
+          error: {
+            message: 'Content-Type header is required',
+            code: 415,
+          },
+        });
+      }
+
+      const type = contentTypeHeader.split(';')[0].trim().toLowerCase();
+
+      if (!Fragment.isSupportedType(type)) {
+        return res.status(415).json({
+          status: 'error',
+          error: {
+            message: `Unsupported content type: ${type}`,
+            code: 415,
+          },
+        });
+      }
+
+      if (type !== fragment.type) {
+        return res.status(400).json({
+          status: 'error',
+          error: {
+            message: 'Content-Type cannot be changed',
+            code: 400,
+          },
+        });
+      }
+
+      if (!req.body || req.body.length === 0) {
+        return res.status(400).json({
+          status: 'error',
+          error: {
+            message: 'Fragment data is required',
+            code: 400,
+          },
+        });
+      }
+
+      await fragment.setData(req.body);
+
+      return res.status(200).json({
+        status: 'ok',
+        fragment,
+      });
+    } catch (err) {
+      return res.status(404).json({
+        status: 'error',
+        error: {
+          message: err.message,
+          code: 404,
+        },
+      });
+    }
+  }
+);
+
+/**
  * Delete a fragment
  * DELETE /v1/fragments/:id
  */

@@ -83,6 +83,32 @@ describe('Fragments API', () => {
     expect(res.headers.location).toContain(`/v1/fragments/${res.body.fragment.id}`);
   });
 
+test('authenticated users can update an existing fragment', async () => {
+  const createRes = await request(app)
+    .post('/v1/fragments')
+    .set('Authorization', 'Bearer test')
+    .set('Content-Type', 'text/plain')
+    .send('original content');
+
+  expect(createRes.statusCode).toBe(201);
+
+  const id = createRes.body.fragment.id;
+
+  const updateRes = await request(app)
+    .put(`/v1/fragments/${id}`)
+    .set('Authorization', 'Bearer test')
+    .set('Content-Type', 'text/plain')
+    .send('updated content');
+
+  expect(updateRes.statusCode).toBe(200);
+
+  const getRes = await request(app)
+    .get(`/v1/fragments/${id}`)
+    .set('Authorization', 'Bearer test');
+
+  expect(getRes.statusCode).toBe(200);
+  expect(getRes.text).toBe('updated content');
+});
   test('authenticated users can create an application/json fragment', async () => {
     const data = {
       name: 'Grace',
