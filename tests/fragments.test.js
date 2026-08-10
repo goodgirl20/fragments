@@ -127,13 +127,27 @@ describe('Fragments API', () => {
     const res = await request(app)
       .post('/v1/fragments')
       .set('Authorization', 'Bearer test')
-      .set('Content-Type', 'image/png')
-      .send(Buffer.from('fake image'));
-
+      
     expect(res.statusCode).toBe(415);
     expect(res.body.status).toBe('error');
     expect(res.body.error.code).toBe(415);
   });
+
+test('authenticated users can create an image/png fragment', async () => {
+  const imageData = Buffer.from('fake png data');
+
+  const res = await request(app)
+    .post('/v1/fragments')
+    .set('Authorization', 'Bearer test')
+    .set('Content-Type', 'image/png')
+    .send(imageData);
+
+  expect(res.statusCode).toBe(201);
+  expect(res.body.status).toBe('ok');
+  expect(res.body.fragment.type).toBe('image/png');
+  expect(res.body.fragment.size).toBe(imageData.length);
+  expect(res.headers.location).toBeDefined();
+});
 
   test('returns 400 when fragment data is missing', async () => {
     const res = await request(app)
