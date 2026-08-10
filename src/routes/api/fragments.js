@@ -1,5 +1,6 @@
 const express = require('express');
 const MarkdownIt = require('markdown-it');
+const sharp = require('sharp');
 
 const Fragment = require('../../model/fragment');
 const { listFragments } = require('../../model/data');
@@ -132,21 +133,41 @@ router.get('/:id/info', async (req, res) => {
 router.get('/:id.:ext', async (req, res) => {
   try {
     const fragment = await Fragment.byId(req.user.sub, req.params.id);
+    const data = await fragment.getData();
+    const ext = req.params.ext.toLowerCase();
 
-    if (req.params.ext !== 'html' || fragment.type !== 'text/markdown') {
-      return res.status(415).json({
-        status: 'error',
-        error: {
-          message: 'Unsupported fragment conversion',
-          code: 415,
-        },
-      });
+    // Markdown -> HTML
+    if (fragment.type === 'text/markdown' && ext === 'html') {
+      const html = markdown.render(data.toString());
+
+      return res
+        .status(200)
+        .set('Content-Type', 'text/html')
+        .send(html);
     }
 
-    const data = await fragment.getData();
-    const html = markdown.render(data.toString());
+    // PNG -> JPEG
+    if (
+      fragment.type === 'image/png' &&
+      (ext === 'jpg' || ext === 'jpeg')
+    ) {
+      const convertedImage = await sharp(data)
+        .jpeg()
+        .toBuffer();
 
-    return res.status(200).type('html').send(html);
+      return res
+        .status(200)
+        .set('Content-Type', 'image/jpeg')
+        .send(convertedImage);
+    }
+
+    return res.status(415).json({
+      status: 'error',
+      error: {
+        message: 'Unsupported fragment conversion',
+        code: 415,
+      },
+    });
   } catch (err) {
     return res.status(404).json({
       status: 'error',
