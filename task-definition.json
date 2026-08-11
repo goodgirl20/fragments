@@ -1,0 +1,52 @@
+{
+  "family": "fragments",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::798319586226:role/LabRole",
+  "taskRoleArn": "arn:aws:iam::798319586226:role/LabRole",
+  "containerDefinitions": [
+    {
+      "name": "fragments",
+      "image": "798319586226.dkr.ecr.us-east-2.amazonaws.com/fragments:a3",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8080,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "AWS_REGION",
+          "value": "us-east-2"
+        },
+        {
+          "name": "AWS_DYNAMODB_TABLE_NAME",
+          "value": "fragments"
+        },
+        {
+          "name": "AWS_S3_BUCKET_NAME",
+          "value": "grace-thomas-fragments-151337235"
+        },
+        {
+          "name": "AWS_COGNITO_POOL_ID",
+          "value": "us-east-2_TJmcyBAAu"
+        },
+        {
+          "name": "AWS_COGNITO_CLIENT_ID",
+          "value": "1osq1bfolmnn5ujt000et3n4t3"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/fragments",
+          "awslogs-region": "us-east-2",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}
