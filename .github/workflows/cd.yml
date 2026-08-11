@@ -1,4 +1,3 @@
-@'
 name: cd
 
 on:
@@ -56,4 +55,3 @@ jobs:
           cluster: fragments-cluster
           wait-for-service-stability: true
           wait-max-delay-seconds: 15
-'@ | Set-Content .github\workflows\cd.yml
