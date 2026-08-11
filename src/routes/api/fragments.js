@@ -147,19 +147,48 @@ router.get('/:id.:ext', async (req, res) => {
     }
 
     // PNG -> JPEG
-    if (
-      fragment.type === 'image/png' &&
-      (ext === 'jpg' || ext === 'jpeg')
-    ) {
-      const convertedImage = await sharp(data)
-        .jpeg()
-        .toBuffer();
+    // Image conversions
+if (fragment.type.startsWith('image/')) {
+  const imageFormats = {
+    png: {
+      format: 'png',
+      contentType: 'image/png',
+    },
+    jpg: {
+      format: 'jpeg',
+      contentType: 'image/jpeg',
+    },
+    jpeg: {
+      format: 'jpeg',
+      contentType: 'image/jpeg',
+    },
+    webp: {
+      format: 'webp',
+      contentType: 'image/webp',
+    },
+    gif: {
+      format: 'gif',
+      contentType: 'image/gif',
+    },
+    avif: {
+      format: 'avif',
+      contentType: 'image/avif',
+    },
+  };
 
-      return res
-        .status(200)
-        .set('Content-Type', 'image/jpeg')
-        .send(convertedImage);
-    }
+  const output = imageFormats[ext];
+
+  if (output) {
+    const convertedImage = await sharp(data)
+      .toFormat(output.format)
+      .toBuffer();
+
+    return res
+      .status(200)
+      .set('Content-Type', output.contentType)
+      .send(convertedImage);
+  }
+}
 
     return res.status(415).json({
       status: 'error',

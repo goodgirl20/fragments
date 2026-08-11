@@ -42,10 +42,14 @@ class Fragment {
 
     const mediaType = type.split(';')[0].trim().toLowerCase();
 
-    return (
+   return (
   mediaType.startsWith('text/') ||
   mediaType === 'application/json' ||
-  mediaType === 'image/png'
+  mediaType === 'image/png' ||
+  mediaType === 'image/jpeg' ||
+  mediaType === 'image/webp' ||
+  mediaType === 'image/gif' ||
+  mediaType === 'image/avif'
 );
   }
 

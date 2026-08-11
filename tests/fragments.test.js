@@ -341,3 +341,35 @@ test('converts a PNG fragment to JPEG', async () => {
   expect(convertRes.statusCode).toBe(200);
   expect(convertRes.headers['content-type']).toMatch(/^image\/jpeg/);
 });
+
+test('converts a JPEG fragment to PNG', async () => {
+  const sharp = require('sharp');
+
+  const jpegData = await sharp({
+    create: {
+      width: 10,
+      height: 10,
+      channels: 3,
+      background: { r: 0, g: 0, b: 255 },
+    },
+  })
+    .jpeg()
+    .toBuffer();
+
+  const createRes = await request(app)
+    .post('/v1/fragments')
+    .set('Authorization', 'Bearer test')
+    .set('Content-Type', 'image/jpeg')
+    .send(jpegData);
+
+  expect(createRes.statusCode).toBe(201);
+
+  const id = createRes.body.fragment.id;
+
+  const convertRes = await request(app)
+    .get(`/v1/fragments/${id}.png`)
+    .set('Authorization', 'Bearer test');
+
+  expect(convertRes.statusCode).toBe(200);
+  expect(convertRes.headers['content-type']).toMatch(/^image\/png/);
+});
